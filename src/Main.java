@@ -94,7 +94,7 @@ public class Main {
     }
 
     private static boolean testPearson(BigDecimal[] randomSequence) {
-        final double DELTA = 19.675;
+        final double DELTA = 18.31;
         final int K = 11;
         final BigDecimal decimalK = new BigDecimal(K);
 
