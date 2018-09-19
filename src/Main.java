@@ -1,9 +1,14 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class Main {
 
     private static final int N = 1000;
+    private static BigDecimal[] randomNumbers1;
+    private static BigDecimal[] randomNumbers2;
+    private static BigDecimal[] randomNumbers3;
 
     public static void main(String... args){
 
@@ -13,11 +18,20 @@ public class Main {
         a = b = new BigInteger("79507");
         c = d = new BigInteger("262147");
 
-        BigDecimal[] randomNumbers1 = multiplicativeCongruentialMethod(a, b, M);
-        BigDecimal[] randomNumbers2 = multiplicativeCongruentialMethod(c, d, M);
+        randomNumbers1 = multiplicativeCongruentialMethod(a, b, M);
+        randomNumbers2 = multiplicativeCongruentialMethod(c, d, M);
 
-        BigDecimal[] randomNumbers3 = macLarenMarsagliaMethod(K, randomNumbers1, randomNumbers2);
+        randomNumbers3 = macLarenMarsagliaMethod(K, randomNumbers1, randomNumbers2);
 
+        outputResultFile("out/output.txt", false);
+
+        System.out.println("Random sequence 1: ");
+        printRandomSequence(randomNumbers1);
+
+        System.out.println("Random sequence 2: ");
+        printRandomSequence(randomNumbers3);
+
+        System.out.println();
 
         System.out.println("Kolmogorov's test 1: " + testKolmogorov(randomNumbers1));
         System.out.println("Pearson's test 1: " + testPearson(randomNumbers1));
@@ -123,6 +137,32 @@ public class Main {
     private static void printRandomSequencesSubtract(BigDecimal[] firstSequence, BigDecimal[] secondSequence) {
         for (int i = 0; i < N; i++) {
             System.out.println(firstSequence[i].subtract(secondSequence[i]));
+        }
+    }
+
+    private static void outputResultFile(String filePath, boolean isNeedRewrite) {
+        try (FileWriter fileWriter = new FileWriter(filePath, isNeedRewrite))
+        {
+            fileWriter.write("Random sequence 1:\n");
+            for (BigDecimal current: randomNumbers1) {
+                fileWriter.write(current.toString());
+                fileWriter.write("\n");
+            }
+            fileWriter.write("\n");
+            fileWriter.write("Random sequence 2:\n");
+            for (BigDecimal current: randomNumbers3) {
+                fileWriter.write(current.toString());
+                fileWriter.write("\n");
+            }
+            fileWriter.write("\n");
+            fileWriter.write("Kolmogorov's test 1: " + testKolmogorov(randomNumbers1) + "\n");
+            fileWriter.write("Pearson's test 1: " + testPearson(randomNumbers1) + "\n");
+            fileWriter.write("Kolmogorov's test 2: " + testKolmogorov(randomNumbers3) + "\n");
+            fileWriter.write("Pearson's test 2: " + testPearson(randomNumbers3) + "\n");
+
+            fileWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
